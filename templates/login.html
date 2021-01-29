@@ -14,6 +14,7 @@
                 {% if form.email.errors %}
                 <div class='error'>
                      **error:
+                     <span>{{ form.email.data }}</span>
                     {% for error in form.email.errors %}
                         <span>{{ error }}</span>
                     {% endfor %}</h4>
@@ -24,13 +25,17 @@
           {% if form.password.errors %}
                 <div class='error'>
                     **error:
+                    <span>{{ form.password.data }}</span>
                     {% for error in form.password.errors %}
                         <span>{{ error }}</span>
+                        
                     {% endfor %}</h4>
                 </div>
                 {% endif %}
                 <br>
                 {{ form.submit }}
+
+                {{ message }}
             </form>
         </div>
         <div>

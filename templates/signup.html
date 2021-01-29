@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <title>Simple form</title>
+    </head>
+    <body>
+        <div class='form'>
+            <form method='POST' action=''>
+                {{ form.hidden_tag() }}
+                {{ form.firstname.label }} {{ form.firstname }}
+                <br>
+                <br>
+                {{ form.lastname.label }} {{ form.lastname }}
+                <br>
+                <br>
+                {{ form.email.label }} {{ form.email }} 
+                <br>
+                <br>
+                {{ form.password.label }} {{ form.password}} {{ form.reenterpassword.label }} {{ form.reenterpassword }}
+                <br>
+                <br>
+                {{ form.telephone.label }} {{ form.telephone}} 
+                <br>
+                <br>
+                {{ form.gender.label }} {{ form.gender}}
+                
+                <br>
+                <br>
+                {{ form.age.label }} {{ form.age}} 
+                <br>
+                <br>
+                {{ form.submit }}
+            {{ message }}
+        
+
+            {% if form.password.errors %}
+            <div class='error'>
+                 **error:
+                 <span>{{ form.password.data }}</span>
+                {% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}</h4>
+            </div>
+            {% endif %}
+
+
+            </form>
+        </div>
+    </body>
+</html>
+
+
+
