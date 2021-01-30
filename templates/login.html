@@ -1,16 +1,17 @@
 <html>
     <head>
-        <title>Simple form validator</title>
+        <title>Login Page</title>
     </head>
     <body>
-        <h1>Login Your Account</h1>
+        <h1>Login Account</h1>
         <div class='form'>
             <form method='POST' action=''>
                 <!--The hidden tag here is necessary for CSRF protection (always include in forms)-->
                 {{ form.hidden_tag() }}
                 <!--We display the username field label and the field itself-->
                 
-                <h4>{{ form.email.label }} {{ form.email }}
+                <h4>{{ form.email.label }} {{ form.email }} 
+                    {{form.entrydate}}
                 {% if form.email.errors %}
                 <div class='error'>
                      **error:

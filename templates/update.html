@@ -1,9 +1,10 @@
 <html>
     <head>
-        <title>Simple form</title>
+        <title>Account Details</title>
     </head>
     <body>
         <div class='form'>
+            <h1>{{greeting}}, {{customer}}, this is your account details</h1>
             <form method='POST' action=''>
                 {{ form.hidden_tag() }}
                 {{ form.firstname.label }} {{ form.firstname }}

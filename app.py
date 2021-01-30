@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, flash, session, url_for, redirect
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, SelectField, validators
+from wtforms.fields.html5 import DateField
 # from wtforms import DataRequired, ValidationError,Email, Length
 
 app = Flask(__name__)
@@ -14,7 +15,7 @@ database = 'flaskdb'
 app.config["SQLALCHEMY_DATABASE_URI"] = f'mysql+pymysql://{username}:{password}@{localhost}/{database}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 db = SQLAlchemy(app)
-
+####table class
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(30), nullable=False)
@@ -30,11 +31,28 @@ class Customers(db.Model):
     gender = db.Column(db.String(2), nullable=False)
     age = db.Column(db.Integer, nullable=False)
 
+class Countries(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    countryname = db.Column(db.String(30), nullable=False)
+    travel_vaccine = db.relationship('Country_Vaccine', backref='countries')
+
+class Vaccine(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    vaccinename = db.Column(db.String(30), nullable=False)
+    travel_vaccine = db.relationship('Country_Vaccine', backref='vaccine')
+
+class Country_Vaccine(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    country_id = db.Column(db.Integer, db.ForeignKey('countries.id'), nullable=False)
+    vaccine_id = db.Column(db.Integer, db.ForeignKey('vaccine.id'), nullable=False)
+
+
 ###form setup
 class LoginForm(FlaskForm):
     email = StringField('email',validators=[validators.Email(granular_message=True)])
-    password = PasswordField('password', validators=[validators.Length(min=6,max=25)])
+    password = PasswordField('password')
     submit = SubmitField('Sign In')
+    entrydate =DateField()
 
 class SignUpForm(FlaskForm):
     firstname = StringField('First Name',validators=[validators.DataRequired()])
@@ -104,6 +122,7 @@ def register():
                 # return render_template('login.html', form = form,message = "existing customer with correct password")
                 session['count'] = 1
                 session['email'] = email
+                session['greeting'] = 'Welcome back'
                 return redirect(url_for('update'))
             else:
                 return render_template('login.html', form = form,message = "Password is incorrect. Please try again.")
@@ -113,10 +132,13 @@ def register():
             session['password'] = password
             session['count'] = 1
             return redirect(url_for('signup'))
-    #return render_template('signup.html', form = form)
+    #return render_template('signup.html', form = form, customer=)
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
+    a=1
+    if a==1:
+        form.gender.choices =['M','F','Perfer Not to Say']
     #currentpassword = form.password.data
     if session['count'] ==1:
         form.email.data = session.get('email')
@@ -136,7 +158,7 @@ def signup():
             name = customer.first_name +" "+ customer.last_name
             db.session.commit()
             output_message = f"Hi {name}, your account has been added. Here is your details."
-            
+            session['greeting'] = 'Welcome to join'
             return render_template('update.html', form = form,message = output_message)
     else:
         return render_template('signup.html', form = form , message = 'Please check your data')
@@ -170,10 +192,10 @@ def update():
         db.session.delete(customer)
         db.session.commit()
         return f"Hi {session['name']}, your account has been deleted.<br/>"
+    return render_template('update.html', form = form, customer = session['name'],greeting=session['greeting'])
 
 
-
-    return render_template('update.html', form = form)
+    #return render_template('update.html', form = form)
 
 
 
