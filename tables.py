@@ -2,7 +2,7 @@
 This file will create the tables which show in app.py with or without records
 '''
 
-from app import db, Users, Customers, Countries, Vaccine  , Country_Vaccine
+from app import db, Users, Customers, Countries, Vaccine  , CVList
 
 db.drop_all()
 db.create_all()
@@ -34,7 +34,7 @@ for i, country in enumerate(countries):
         vaccineid = Vaccine.query.filter_by(vaccinename=v).first()
         print(countryid.id, '', vaccineid.id)
         
-        item = Country_Vaccine(country_id = countryid.id, vaccine_id = vaccineid.id)
+        item = CVList(country_id = countryid.id, vaccine_id = vaccineid.id)
         db.session.add(item)
         db.session.commit()
 
