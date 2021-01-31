@@ -80,7 +80,7 @@ class SignUpForm(FlaskForm):
     telephone = StringField('Telephone',validators=[validators.DataRequired()])
     gender = SelectField('Gender',choices=['M','F'])
     age = StringField('Age',validators=[validators.DataRequired()])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Sign In')
 
 class UpdateForm(FlaskForm):
     firstname = StringField('First Name',validators=[validators.DataRequired()])
@@ -91,6 +91,7 @@ class UpdateForm(FlaskForm):
     age = StringField('Age',validators=[validators.DataRequired()])
     update = SubmitField('Update')
     delete = SubmitField('Delete')
+    booking = SubmitField('Booking an Appointment')
 
 class BookingForm(FlaskForm):
     country = SelectField('Travel Country',choices=[])
@@ -99,6 +100,22 @@ class BookingForm(FlaskForm):
     go = SubmitField('Go')
     entrydate =DateField('Date')#,validators=[validators.DataRequired()])
     timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
+    delete=  SubmitField('Delete selected Appointment')
+    update=  SubmitField('Update selected Appointment')
+    appointments =SelectField('Appointments',choices=[])
+
+class ActionsForm(FlaskForm):
+    update = SubmitField('Update')
+    booking =SubmitField('Book an Appointment')
+
+class UpdateBookingForm(FlaskForm):
+    country = SelectField('Travel Country',choices=[])
+    vaccine = SelectField('Vaccine',choices=[])
+    submit = SubmitField('Book an Appointment')
+    go = SubmitField('Go')
+    entrydate =DateField('Date')#,validators=[validators.DataRequired()])
+    timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
+    update=  SubmitField('Update this Appointment')
 
 ####Functions
 def is_exist(customers, email):
@@ -128,14 +145,14 @@ def add_customer(frm):
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
-def register():
+def login():
     error = ""
     form = LoginForm()
     email = form.email.data
     password = form.password.data
     if form.test.data:
         session['initial']=True
-        return redirect(url_for("booking"))
+        return redirect(url_for("actions"))
     if  not form.validate_on_submit():        
         if form.email.errors:
             email=""
@@ -145,16 +162,15 @@ def register():
         form.password.data = password
         return render_template('login.html', form = form)
     else:
-        if is_exist(Customers.query.all(), form.email.data):
+        if is_exist(Customers.query.all(), form.email.data): ##login successfully
             if is_same_password(Customers.query.all(), form.password.data, form.email.data):
                 # return render_template('login.html', form = form,message = "existing customer with correct password")
                 session['count'] = 1
                 session['email'] = email
                 session['greeting'] = 'Welcome back'
-                return redirect(url_for('update'))
+                return redirect(url_for('actions'))
             else:
                 return render_template('login.html', form = form,message = "Password is incorrect. Please try again.")
-
         else: # new user
             session['email'] =  email
             session['password'] = password
@@ -164,9 +180,6 @@ def register():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
-    a=1
-    if a==1:
-        form.gender.choices =['M','F','Perfer Not to Say']
     #currentpassword = form.password.data
     if session['count'] ==1:
         form.email.data = session.get('email')
@@ -176,7 +189,7 @@ def signup():
         # if len(Customers.query.all()) ==0:
         #     return render_template('signup.html', form = form,message = 'New customer')
         # else:
-        
+        email =  form.email.data
         if is_exist(Customers.query.all(), form.email.data):
             return render_template('signup.html', form = form,message = 'Existing customer')
         else:
@@ -187,7 +200,10 @@ def signup():
             db.session.commit()
             output_message = f"Hi {name}, your account has been added. Here is your details."
             session['greeting'] = 'Welcome to join'
-            return render_template('update.html', form = form,message = output_message)
+            session['email'] = email
+            session['count'] = 1
+            return redirect(url_for('update'))
+            #return render_template('update.html', form = form,message = output_message)
     else:
         return render_template('signup.html', form = form , message = 'Please check your data')
     #return render_template('signup.html', form = form)
@@ -207,6 +223,7 @@ def update():
         form.age.data = customer.age
         session['name']= customer.first_name +" "+customer.last_name
         session['count'] = 2
+        session['id'] = Customers.query.filter_by(email = session['email']).first().id
     if form.update.data and form.validate_on_submit(): ##update record
         customer.first_name =form.firstname.data
         form.lastname.data = customer.last_name
@@ -220,26 +237,44 @@ def update():
         db.session.delete(customer)
         db.session.commit()
         return f"Hi {session['name']}, your account has been deleted.<br/>"
+    if form.booking.data:
+        session['initial']=True
+        return redirect(url_for('booking'))
     return render_template('update.html', form = form, customer = session['name'],greeting=session['greeting'])
 
 @app.route('/booking', methods=['GET', 'POST'])
 def booking():
     form = BookingForm()
+    ##update appointments list  
+    customer = Customers.query.filter_by(id = session['id']).first()
+    appointments = Bookings.query.filter_by(customer_id=customer.id).all()
+    app_list=['Date       ' + 'Weekday     '+'Time Solt      '+'Country      '+'Vaccine     ']
+    for appointment in appointments:
+        countryname = Countries.query.filter_by(id = appointment.country_id).first().countryname
+        vaccinename = Vaccine.query.filter_by(id = appointment.vaccine_id).first().vaccinename
+        tbl_string = str(appointment.date.date().strftime('%d-%b-%Y')) + " "+appointment.weekday + " "+appointment.timeslot+\
+            " "+countryname.center(12)+" "+vaccinename.center(20)
+        app_list.append(tbl_string)
+    form.appointments.choices =  app_list
     allcounties = Countries.query.all()
     country_list=[]
     for country in allcounties:
        country_list.append(country.countryname)
     form.country.choices =country_list
-    if not session['initial']:
+    if session['initial']:
+        selected_country = country_list[0]
+        form.entrydate.data= datetime.date.today()
+        session['initial'] =False
+    else:
         selected_country = form.country.data
-        country_id = Countries.query.filter_by(countryname = selected_country).first().id
-        vaccine_list=[]
-        selected_country_vaccine = CVList.query.filter_by(country_id = country_id).all()
-        for v in selected_country_vaccine:
-            vaccine_list.append(Vaccine.query.filter_by(id = v.vaccine_id).first().vaccinename)
-        form.vaccine.choices=vaccine_list
+    country_id = Countries.query.filter_by(countryname = selected_country).first().id
+    vaccine_list=[]
+    selected_country_vaccine = CVList.query.filter_by(country_id = country_id).all()
+    for v in selected_country_vaccine:
+        vaccine_list.append(Vaccine.query.filter_by(id = v.vaccine_id).first().vaccinename)
+    form.vaccine.choices=vaccine_list
     # self.cleaned_data['date'] 
-    session['initial'] =False
+    
     selected_date = form.entrydate.data
     is_date_right = True
     error = ""
@@ -254,16 +289,149 @@ def booking():
         error += "<br> No vaccine is selected. Press 'Go' button to enable selection"
         is_vaccine_selected = False
     weekday =['Monday','Tuesday', 'Wednesday', 'Thursday','Friday']
-    if form.submit.data and is_date_right and is_vaccine_selected:# and form.validate_on_submit():
-        return f"A vaccine {form.vaccine.data} appointment has been booked on {weekday[selected_date.weekday()]}, {form.entrydate.data}, at {form.timeslot.data} for travelling to {form.country.data}"
-    session['initial']=False
-
-   
-    return render_template('booking.html', form = form, message = error)
     
+    if form.submit.data and is_date_right and is_vaccine_selected:# and form.validate_on_submit():
+        customer = Customers.query.filter_by(id = session['id']).first()
+        name = customer.first_name +" "+customer.last_name##
+        ###
+        date = selected_date
+        weekday = weekday[selected_date.weekday()]
+        timeslot = form.timeslot.data
+        customer_id = session['id']
+        country_id = Countries.query.filter_by(countryname=form.country.data).first().id
+        vaccine_id = Vaccine.query.filter_by(vaccinename=form.vaccine.data).first().id 
+        booking_to_add = Bookings(date=date, weekday=weekday, timeslot = timeslot,customer_id=customer_id, country_id= country_id, vaccine_id=vaccine_id)
+        db.session.add(booking_to_add)
+        db.session.commit()
+        app_list.append(str(selected_date.strftime('%d-%b-%Y')).center(12) + " "+weekday.center(10) + timeslot.center(10)+\
+            form.country.data.center(12)+form.vaccine.data.center(20))
+        return render_template('booking.html', form = form, message = app_list)
+        #return f"Hi, {name}, a vaccine {form.vaccine.data} appointment has been booked on {weekday[selected_date.weekday()]}, {form.entrydate.data}, at {form.timeslot.data} for travelling to {form.country.data}"
+    if form.delete.data or form.update.data:
+        customer_id = customer.id
+        delete_appointment= form.appointments.data
+        raw_columns = delete_appointment.split(' ')
+        columns=[]
+        for rc in raw_columns:
+            if len(rc.strip())>0:
+                columns.append(rc.strip())
+        date= datetime.datetime.strptime(columns[0]+ " 00:00:00", '%d-%b-%Y %H:%M:%S')
+        columns[0]=date
+        weekday = columns[1]
+        timeslot = columns[2]
+        #customer_id = session['id']
+        country_id = Countries.query.filter_by(countryname=columns[3]).first().id
+        vaccine_id = Vaccine.query.filter_by(vaccinename=columns[4]).first().id 
+        columns[3]=customer_id
+        columns[4]=country_id
+        columns.append(vaccine_id)
+        appointments_to_delete = Bookings.query.filter_by(date=date, weekday=weekday, timeslot = timeslot,customer_id=customer_id, country_id= country_id, vaccine_id=vaccine_id).first()
+        if form.delete.data:
+            db.session.delete(appointments_to_delete)
+            db.session.commit()
+            app_list.remove(delete_appointment)
+            return render_template('booking.html', form = form, message = [date, weekday, timeslot, country_id,vaccine_id])
+        else:
+            session['appointment']=columns
+            session['initial']=True
+            return redirect(url_for('updatebooking'))
 
+    session['initial']=False   
+    return render_template('booking.html', form = form, message=app_list)  
     #return render_template('update.html', form = form)
 #     
+
+
+
+@app.route('/actions', methods=['GET', 'POST'])
+def actions():
+    form = ActionsForm()
+    title = ""
+    customer = []
+    tbl_string = "<table>"
+    tbl_string += "<tr> <th>date</th> <th>time slot</th> <th>country</th> <th>vaccine</th></tr>"
+    tbl_string +=  "</table>"
+    if session['count']==1:
+        email = session['email']
+        customer = Customers.query.filter_by(email = session['email']).first()
+        
+        title = f"{session['greeting']}, {customer.first_name+' '+customer.last_name}, you can view your account details and book an appointment."
+    appointments = Bookings.query.filter_by(customer_id=customer.id).all()
+    app_list=['Date       ' + 'Weekday     '+'Time Solt      '+'Country      '+'Vaccine     ']
+    for appointment in appointments:
+        countryname = Countries.query.filter_by(id = appointment.country_id).first().countryname
+        vaccinename = Vaccine.query.filter_by(id = appointment.vaccine_id).first().vaccinename
+        tbl_string = str(appointment.date.date().strftime('%d-%b-%Y'))+" " +appointment.weekday+" " + appointment.timeslot+" "+\
+            countryname+" "+vaccinename.center(20)
+        app_list.append(tbl_string)
+    tbl_string += "<td>end of list===\n"
+    tbl_string.replace("\n", "<\td>")
+    if form.booking.data:
+        session['id']=customer.id
+        session['initial']=True
+        return redirect(url_for('booking'))
+    return render_template('actions.html', form = form, title=title,message=app_list)  
+
+
+@app.route('/updatebooking', methods=['GET', 'POST'])
+def updatebooking():
+    form=UpdateBookingForm()
+    col =session['appointment']
+    appointment=Bookings.query.filter_by(date=col[0].isoformat(), weekday=col[1], timeslot = col[2],customer_id=col[3], country_id= col[4], vaccine_id=col[5]).first()
+    if session['initial']:
+        allcounties = Countries.query.all()
+        country_list=[]
+        for country in allcounties:
+            country_list.append(country.countryname)
+        form.country.choices =country_list
+        col =session['appointment']
+        vaccine_list=[]
+        selected_country_vaccine = CVList.query.filter_by(country_id = col[4]).all()
+        for v in selected_country_vaccine:
+            vaccine_list.append(Vaccine.query.filter_by(id = v.vaccine_id).first().vaccinename)
+
+        form.vaccine.choices=vaccine_list
+        countryname = Countries.query.filter_by(id = col[4]).first().countryname
+        form.country.data= countryname
+        vaccinename = Vaccine.query.filter_by(id = col[5]).first().vaccinename
+        form.vaccine.data=vaccinename
+        
+        form.entrydate.data = appointment.date
+        form.timeslot.data=appointment.timeslot 
+        session['initial']=False
+    
+    ###
+    is_date_right = True
+    selected_date = form.entrydate.data
+    #return render_template('updatebooking.html', form = form, message=[selected_date])  
+    
+    if not selected_date is None:
+        sval =10000*selected_date.year + 100*selected_date.month + selected_date.day
+        tval =10000*datetime.date.today().year + 100*datetime.date.today().month + datetime.date.today().day
+        is_date_right = is_date_right and sval > tval and selected_date.weekday()<5
+        error = "Selected day must later than today between Monday to Friday."
+    else:
+        is_date_right =False
+        error = "No date is selected. Selected day must later than today between Monday to Friday."
+
+    weekday =['Monday','Tuesday', 'Wednesday', 'Thursday','Friday']
+    
+    if form.update.data and is_date_right :# and form.validate_on_submit():
+        customer = Customers.query.filter_by(id = session['appointment'][3]).first()
+        name = customer.first_name +" "+customer.last_name##
+        ###
+        appointment.date =form.entrydate.data
+        appointment.weekday = weekday[form.entrydate.data.weekday()]
+        appointment.timeslot = form.timeslot.data
+        appointment.customer_id = session['appointment'][3]
+        appointment.country_id = Countries.query.filter_by(countryname=form.country.data).first().id
+        appointment.vaccine_id = Vaccine.query.filter_by(vaccinename=form.vaccine.data).first().id 
+        db.session.commit()
+        return redirect(url_for('actions'))
+
+    
+    
+    return render_template('updatebooking.html', form = form)
 
 
 
