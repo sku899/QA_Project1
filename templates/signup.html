@@ -3,7 +3,7 @@
         <title>New Customer To Create New Account</title>
     </head>
     <body>
-        <h1>Hi welcome to Join us. Please fill the form to setup your account</h1>
+        <h1>Hi welcome to join us. Please fill the form to complete your account setup</h1>
         <div class='form'>
             <form method='POST' action=''>
                 {{ form.hidden_tag() }}
@@ -37,6 +37,9 @@
             <div class='error'>
                  **error:
                 {% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}</h4>
+                {% for error in form.reenterpassword.errors %}
                     <span>{{ error }}</span>
                 {% endfor %}</h4>
             </div>

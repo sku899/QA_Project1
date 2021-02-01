@@ -76,7 +76,7 @@ class SignUpForm(FlaskForm):
     firstname = StringField('First Name',validators=[validators.DataRequired()])
     lastname = StringField('Last Name',validators=[validators.DataRequired()])
     email = StringField('email',validators=[validators.Email(granular_message=True)])
-    password = PasswordField('Password', validators=[validators.EqualTo('reenterpassword',message = "Password doesn't match")])
+    password = PasswordField('Password', validators=[validators.Length(min=6,max=25), validators.EqualTo('reenterpassword',message = "Password doesn't match")])
     reenterpassword = PasswordField('Re-Type Password', validators=[validators.Length(min=6,max=25)])
     telephone = StringField('Telephone',validators=[validators.DataRequired()])
     gender = SelectField('Gender',choices=['M','F'])
@@ -90,9 +90,9 @@ class UpdateForm(FlaskForm):
     telephone = StringField('Telephone',validators=[validators.DataRequired()])
     gender = SelectField('Gender',choices=['M','F'])
     age = StringField('Age',validators=[validators.DataRequired()])
-    update = SubmitField('Update')
-    delete = SubmitField('Delete')
-    booking = SubmitField('Booking an Appointment')
+    update = SubmitField('Update your Account')
+    delete = SubmitField('Withdraw your Account')
+    booking = SubmitField('Make an Appointment')
 
 class BookingForm(FlaskForm):
     country = SelectField('Travel Country',choices=[])
@@ -128,7 +128,7 @@ def is_exist(customers, email):
 
 def is_same_password(customers, password, email):
     for customer in customers:
-        if (email == customer.email) and (password == customer.password):
+        if (email.lower() == customer.email.lower()) and (password == customer.password):
             return True
     return False
 
@@ -197,6 +197,7 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
+    errmsg=""
     #currentpassword = form.password.data
     if session['count'] ==1:
         form.email.data = session.get('email')
@@ -213,7 +214,7 @@ def signup():
             customer = add_customer(form)
             #customer.password = currentpaessword
             db.session.add(customer)
-            name = customer.first_name +" "+ customer.last_name
+            name = form.firstname.data +" " +form.lastname.data #customer.first_name +" "+ customer.last_name
             db.session.commit()
             output_message = f"Hi {name}, your account has been added. Here is your details."
             session['greeting'] = 'Welcome to join'
@@ -222,7 +223,8 @@ def signup():
             return redirect(url_for('update'))
             #return render_template('update.html', form = form,message = output_message)
     else:
-        return render_template('signup.html', form = form , message = 'Please check your data')
+        errmsg = 'Please check your data. No blank field is allowed'
+    return render_template('signup.html', form = form , message = errmsg)
     #return render_template('signup.html', form = form)
 
 
@@ -249,6 +251,8 @@ def update():
         customer.gender = form.gender.data
         customer.age = form.age.data
         db.session.commit()
+        session['name'] = form.firstname.data +" "+ customer.last_name
+        session['greeting'] ="account update is done"
         return render_template('update.html', form = form, message = 'Update record successfully.')
     if form.delete.data:
         db.session.delete(customer)
@@ -256,6 +260,7 @@ def update():
         return f"Hi {session['name']}, your account has been deleted.<br/>"
     if form.booking.data:
         session['initial']=True
+        session['from'] = ''
         return redirect(url_for('booking'))
     return render_template('update.html', form = form, customer = session['name'],greeting=session['greeting'])
 
@@ -404,6 +409,12 @@ def actions():
         session['initial']=True
         session['from']='action'
         return redirect(url_for('booking'))
+    if form.update.data:
+            session['greeting'] = 'Welcome back'
+            session['email'] = email
+            session['count'] = 1
+            return redirect(url_for('update'))
+
     return render_template('actions.html', form = form, title=title, message=appointment_list)  
 
 
