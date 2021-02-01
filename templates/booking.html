@@ -1,9 +1,9 @@
 <html>
     <head>
-        <title>Booking Page</title>
+        <title>Appointment Management Page</title>
     </head>
     <body>
-        <h1>Login Account</h1>
+        <h1>Manage your Appointments</h1>
         <div class='form'>
             <form method='POST' action=''>
                 <!--The hidden tag here is necessary for CSRF protection (always include in forms)-->
@@ -28,9 +28,9 @@
                 <span style="display:inline-block; width: 15em;"></span>
                 <span>{{ form.delete }}</span>
                 <span style="display:inline-block; width: 2em;"></span>
-                <span>{{ form.update }}</span>
-
-                
+                <span>{{ form.update }}</span> 
+                <span style="display:inline-block; width: 3em;"></span>
+                <span style="color:red" >{{msg}} </span>
                 <br>
                 <br>
                 <h4>
