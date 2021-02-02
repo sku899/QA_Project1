@@ -10,7 +10,7 @@
         }
     --></style>
     <body>
-        <h1>Login Account</h1>
+        <h1>Welcome to Travel Vaccine Centre</h1>
         <div class='form'>
             <form method='POST' action=''>
                 <!--The hidden tag here is necessary for CSRF protection (always include in forms)-->
@@ -19,7 +19,7 @@
                 <!--insert a table>-->
                 <div id= "pos">
                     <table style="width:60%">
-                        <col style="width:6%">
+                        <col style="width:12%">
                         <col style="width:15%">
                         <col style="color:red;">
 
@@ -50,8 +50,8 @@
                             <td> <div class='error' style="color:red;"><span>{{message}}</span> </div></td>
                         </tr>
                         <tr>
-                            <td>{{ form.signin }}</td>
-                            <td> </td>
+                            <td>{{ form.login }}</td>
+                            <td>{{ form.register }} </td>
                             <td></td>
                         </tr>
                     </table>

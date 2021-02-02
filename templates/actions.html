@@ -30,13 +30,13 @@
                         </tr>
                         <tr>
                         <td>{{ form.update }}</td>
-                        <td> Click Update to View and Update your account details</td>
+                        <td> View, Update and Delete your account</td>
                         <td> </td>
                         </tr>
                         <tr></tr>
                         <tr>
                             <td>{{ form.booking }}</td>
-                            <td> Click Bookings to View and Update your appointments</td>
+                            <td> Create, View, Update and Delete your appointments</td>
                             <td></td>
                         </tr>
                         <tr>
@@ -51,6 +51,9 @@
                     <br> {{m}}
                 {% endfor %}</h4>
                 </div>
+                <br>
+                <br>
+                {{ form.logout }}
                
             </form>
         </div>

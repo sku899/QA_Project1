@@ -7,14 +7,16 @@ import datetime
 # from wtforms import DataRequired, ValidationError,Email, Length
 import form_list as frm
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'YOUR_SECRET_KEY'
 username='me'
 password = 'qwerty123'
-localhost = 'localhost:3306'
+ocalhost = 'localhost:3306'
 database = 'flaskdb'
 
-app.config["SQLALCHEMY_DATABASE_URI"] = f'mysql+pymysql://{username}:{password}@{localhost}/{database}'
+#app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{username}:{password}@{localhost}/{database}"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://me:qwerty123@localhost:3306/flaskdb"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 db = SQLAlchemy(app)
 
@@ -81,7 +83,7 @@ class SignUpForm(FlaskForm):
     telephone = StringField('Telephone',validators=[validators.DataRequired()])
     gender = SelectField('Gender',choices=['M','F'])
     age = StringField('Age',validators=[validators.DataRequired()])
-    submit = SubmitField('Sign In')
+    submit = SubmitField('Create New Account')
 
 class UpdateForm(FlaskForm):
     firstname = StringField('First Name',validators=[validators.DataRequired()])
@@ -91,32 +93,34 @@ class UpdateForm(FlaskForm):
     gender = SelectField('Gender',choices=['M','F'])
     age = StringField('Age',validators=[validators.DataRequired()])
     update = SubmitField('Update your Account')
-    delete = SubmitField('Withdraw your Account')
-    booking = SubmitField('Make an Appointment')
+    delete = SubmitField('Delete your Account')
+    booking = SubmitField('Create an Appointment')
 
 class BookingForm(FlaskForm):
     country = SelectField('Travel Country',choices=[])
     vaccine = SelectField('Vaccine',choices=[])
-    submit = SubmitField('Book an Appointment')
-    go = SubmitField('Go')
+    submit = SubmitField('Create an Appointment')
+    go = SubmitField('Retrieve Vaccine')
     entrydate =DateField('Date')#,validators=[validators.DataRequired()])
     timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
     delete=  SubmitField('Delete selected Appointment')
     update=  SubmitField('Update selected Appointment')
     appointments =SelectField('Appointments',choices=[])
+    back=  SubmitField('Back to Manual')
 
 class ActionsForm(FlaskForm):
     update = SubmitField('Update Your Account')
     booking =SubmitField('Manage Your Appointments')
+    logout =SubmitField('Log out')
 
 class UpdateBookingForm(FlaskForm):
     country = SelectField('Travel Country',choices=[])
     vaccine = SelectField('Vaccine',choices=[])
-    submit = SubmitField('Book an Appointment')
-    go = SubmitField('Go')
+    submit = SubmitField('Create an Appointment')
+    go = SubmitField('Retrieve Vaccine')
     entrydate =DateField('Date')#,validators=[validators.DataRequired()])
     timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
-    update=  SubmitField('Change this Appointment')
+    update=  SubmitField('Update this Appointment')
     cancel = SubmitField('Cancel')
 
 ####Functions
@@ -166,15 +170,19 @@ def login():
     form = frm.LoginForm()
     email = form.email.data
     password = form.password.data
-    if form.test.data:
+    if session['email']=='':
+        pass
+    if form.register.data:
         session['initial']=True
-        return redirect(url_for("actions"))
+        return redirect(url_for("signup"))
     if  not form.validate_on_submit():        
         if form.email.errors:
             email=""
         if form.password.errors:
             password=""
         form.email.data = email
+        if len(session['email']) >0 :
+            form.email.data=session['mail']
         form.password.data = password
         return render_template('login.html', form = form)
     else:
@@ -187,12 +195,14 @@ def login():
                 session['greeting'] = 'Welcome back'
                 return redirect(url_for('actions'))
             else:
-                return render_template('login.html', form = form,message = "**Password is incorrect. Please try again.")
+                form.email.data = email=""
+                return render_template('login.html', form = form, message = "**Password is incorrect. Please try again." )
         else: # new user
             session['email'] =  email
             session['password'] = password
             session['count'] = 1
-            return redirect(url_for('signup'))
+            form.email.data = email
+            return render_template('login.html', form = form, message = "**New User?? Please Register." )
     #return render_template('signup.html', form = form, customer=)
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -209,7 +219,9 @@ def signup():
         # else:
         email =  form.email.data
         if is_exist(Customers.query.all(), form.email.data):
-            return render_template('signup.html', form = form,message = 'Existing customer')
+            #return render_template('signup.html', form = form,message = 'Existing customer')
+            session['mail'] = email
+            return redirect(url_for('login'))
         else:
             customer = add_customer(form)
             #customer.password = currentpaessword
@@ -223,7 +235,7 @@ def signup():
             return redirect(url_for('update'))
             #return render_template('update.html', form = form,message = output_message)
     else:
-        errmsg = 'Please check your data. No blank field is allowed'
+        errmsg = 'Please check your data. All fields are required'
     return render_template('signup.html', form = form , message = errmsg)
     #return render_template('signup.html', form = form)
 
@@ -252,12 +264,16 @@ def update():
         customer.age = form.age.data
         db.session.commit()
         session['name'] = form.firstname.data +" "+ customer.last_name
-        session['greeting'] ="account update is done"
-        return render_template('update.html', form = form, message = 'Update record successfully.')
+        session['greeting'] ="Account updated"
+        return render_template('update.html', form = form, customer = session['name'],greeting=session['greeting'],message = 'Update record successfully.')
     if form.delete.data:
-        db.session.delete(customer)
-        db.session.commit()
-        return f"Hi {session['name']}, your account has been deleted.<br/>"
+        num_of_apps = len(Bookings.query.filter_by(customer_id=customer.id).all())
+        if num_of_apps ==0:
+            db.session.delete(customer)
+            db.session.commit()
+            return f"Hi {session['name']}, your account has been deleted.<br/>"
+        else:
+            return render_template('update.html', form = form, customer = session['name'],greeting=session['greeting'],message = f'You have {num_of_apps} account(s) with us. You cannot withdraw the account now.')
     if form.booking.data:
         session['initial']=True
         session['from'] = ''
@@ -349,7 +365,7 @@ def booking():
             if not is_date_right:
                 errmsg += "Selected date must be a working day later than today. "
             if not is_vaccine_selected:
-                errmsg += "Make sure vaccine is selecred."
+                errmsg += "Make sure vaccine is selected."
 
             return render_template('booking.html', form = form, message = app_list,msg = errmsg )
         #return f"Hi, {name}, a vaccine {form.vaccine.data} appointment has been booked on {weekday[selected_date.weekday()]}, {form.entrydate.data}, at {form.timeslot.data} for travelling to {form.country.data}"
@@ -388,7 +404,12 @@ def booking():
                 session['app_to_update']=form.appointments.data
                 return redirect(url_for('updatebooking'))
         else:
-            return render_template('booking.html', form = form, message=app_list, msg='**error: There is appointment selected.')
+            return render_template('booking.html', form = form, message=app_list, msg='**error: No appointment is selected.')
+    if form.back.data:
+        session['count'] = 1
+        session['email'] = customer.email
+        session['greeting'] = 'Welcome back'
+        return redirect(url_for('actions'))
     session['initial']=False   
     return render_template('booking.html', form = form, message=app_list, msg=msg)  
     #return render_template('update.html', form = form)
@@ -410,10 +431,16 @@ def actions():
         session['from']='action'
         return redirect(url_for('booking'))
     if form.update.data:
-            session['greeting'] = 'Welcome back'
-            session['email'] = email
-            session['count'] = 1
-            return redirect(url_for('update'))
+        session['greeting'] = 'Welcome back'
+        session['email'] = email
+        session['count'] = 1
+        return redirect(url_for('update'))
+    if form.logout.data:
+        session['count'] = 0
+        session['email'] = ''
+        session['greeting'] = ''
+        return redirect(url_for('login'))
+        
 
     return render_template('actions.html', form = form, title=title, message=appointment_list)  
 
