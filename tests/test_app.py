@@ -106,7 +106,7 @@ class Testlogin(TestBase):
 
 class TestSignup(TestBase):
     def test_update_post(self):
-        session['appointment'] ='12345'
+        session['appointment'] =Bookings()
         response = self.client.post(
             url_for('updatebooking'),
             data = dict(),
