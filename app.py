@@ -74,54 +74,54 @@ class Bookings(db.Model):
 #     test = SubmitField('test')
 #     entrydate =DateField()
 
-class SignUpForm(FlaskForm):
-    firstname = StringField('First Name',validators=[validators.DataRequired()])
-    lastname = StringField('Last Name',validators=[validators.DataRequired()])
-    email = StringField('email',validators=[validators.Email(granular_message=True)])
-    password = PasswordField('Password', validators=[validators.Length(min=6,max=25), validators.EqualTo('reenterpassword',message = "Password doesn't match")])
-    reenterpassword = PasswordField('Re-Type Password', validators=[validators.Length(min=6,max=25)])
-    telephone = StringField('Telephone',validators=[validators.DataRequired()])
-    gender = SelectField('Gender',choices=['M','F'])
-    age = StringField('Age',validators=[validators.DataRequired()])
-    submit = SubmitField('Create New Account')
+# class SignUpForm(FlaskForm):
+#     firstname = StringField('First Name',validators=[validators.DataRequired()])
+#     lastname = StringField('Last Name',validators=[validators.DataRequired()])
+#     email = StringField('email',validators=[validators.Email(granular_message=True)])
+#     password = PasswordField('Password', validators=[validators.Length(min=6,max=25), validators.EqualTo('reenterpassword',message = "Password doesn't match")])
+#     reenterpassword = PasswordField('Re-Type Password', validators=[validators.Length(min=6,max=25)])
+#     telephone = StringField('Telephone',validators=[validators.DataRequired()])
+#     gender = SelectField('Gender',choices=['M','F'])
+#     age = StringField('Age',validators=[validators.DataRequired()])
+#     submit = SubmitField('Create New Account')
 
-class UpdateForm(FlaskForm):
-    firstname = StringField('First Name',validators=[validators.DataRequired()])
-    lastname = StringField('Last Name',validators=[validators.DataRequired()])
-    email = StringField('email',validators=[validators.Email(granular_message=True)])
-    telephone = StringField('Telephone',validators=[validators.DataRequired()])
-    gender = SelectField('Gender',choices=['M','F'])
-    age = StringField('Age',validators=[validators.DataRequired()])
-    update = SubmitField('Update your Account')
-    delete = SubmitField('Delete your Account')
-    booking = SubmitField('Create an Appointment')
+# class UpdateForm(FlaskForm):
+#     firstname = StringField('First Name',validators=[validators.DataRequired()])
+#     lastname = StringField('Last Name',validators=[validators.DataRequired()])
+#     email = StringField('email',validators=[validators.Email(granular_message=True)])
+#     telephone = StringField('Telephone',validators=[validators.DataRequired()])
+#     gender = SelectField('Gender',choices=['M','F'])
+#     age = StringField('Age',validators=[validators.DataRequired()])
+#     update = SubmitField('Update your Account')
+#     delete = SubmitField('Delete your Account')
+#     booking = SubmitField('Create an Appointment')
 
-class BookingForm(FlaskForm):
-    country = SelectField('Travel Country',choices=[])
-    vaccine = SelectField('Vaccine',choices=[])
-    submit = SubmitField('Create an Appointment')
-    go = SubmitField('Retrieve Vaccine')
-    entrydate =DateField('Date')#,validators=[validators.DataRequired()])
-    timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
-    delete=  SubmitField('Delete selected Appointment')
-    update=  SubmitField('Update selected Appointment')
-    appointments =SelectField('Appointments',choices=[])
-    back=  SubmitField('Back to Manual')
+# class BookingForm(FlaskForm):
+#     country = SelectField('Travel Country',choices=[])
+#     vaccine = SelectField('Vaccine',choices=[])
+#     submit = SubmitField('Create an Appointment')
+#     go = SubmitField('Retrieve Vaccine')
+#     entrydate =DateField('Date')#,validators=[validators.DataRequired()])
+#     timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
+#     delete=  SubmitField('Delete selected Appointment')
+#     update=  SubmitField('Update selected Appointment')
+#     appointments =SelectField('Appointments',choices=[])
+#     back=  SubmitField('Back to Manual')
 
-class ActionsForm(FlaskForm):
-    update = SubmitField('Update Your Account')
-    booking =SubmitField('Manage Your Appointments')
-    logout =SubmitField('Log out')
+# class ActionsForm(FlaskForm):
+#     update = SubmitField('Update Your Account')
+#     booking =SubmitField('Manage Your Appointments')
+#     logout =SubmitField('Log out')
 
-class UpdateBookingForm(FlaskForm):
-    country = SelectField('Travel Country',choices=[])
-    vaccine = SelectField('Vaccine',choices=[])
-    submit = SubmitField('Create an Appointment')
-    go = SubmitField('Retrieve Vaccine')
-    entrydate =DateField('Date')#,validators=[validators.DataRequired()])
-    timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
-    update=  SubmitField('Update this Appointment')
-    cancel = SubmitField('Cancel')
+# class UpdateBookingForm(FlaskForm):
+#     country = SelectField('Travel Country',choices=[])
+#     vaccine = SelectField('Vaccine',choices=[])
+#     submit = SubmitField('Create an Appointment')
+#     go = SubmitField('Retrieve Vaccine')
+#     entrydate =DateField('Date')#,validators=[validators.DataRequired()])
+#     timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
+#     update=  SubmitField('Update this Appointment')
+#     cancel = SubmitField('Cancel')
 
 ####Functions
 def is_exist(customers, email):
@@ -157,8 +157,9 @@ def get_appointment_list(appointments):
         for appointment in appointments:
             countryname = Countries.query.filter_by(id = appointment.country_id).first().countryname
             vaccinename = Vaccine.query.filter_by(id = appointment.vaccine_id).first().vaccinename
-            tbl_string = str(appointment.date.date().strftime('%d-%b-%Y'))+" " +appointment.weekday+" " + appointment.timeslot+" "+\
-                countryname+" "+vaccinename
+            tbl_string = str(appointment.date.date().strftime('%d-%b-%Y'))+" "+\
+                appointment.weekday+" " + appointment.timeslot+" "+\
+                appointment.countries.countryname+" "+appointment.vaccine.vaccinename
             app_list.append(tbl_string)
     return app_list
 
@@ -170,8 +171,8 @@ def login():
     form = frm.LoginForm()
     email = form.email.data
     password = form.password.data
-    if session['email']=='':
-        pass
+    # if session['email']=='':
+    #     pass
     if form.register.data:
         session['initial']=True
         return redirect(url_for("signup"))
@@ -181,8 +182,8 @@ def login():
         if form.password.errors:
             password=""
         form.email.data = email
-        if len(session['email']) >0 :
-            form.email.data=session['mail']
+        # if len(session['email']) >0 :
+        #     form.email.data=session['mail']
         form.password.data = password
         return render_template('login.html', form = form)
     else:
@@ -206,7 +207,7 @@ def login():
     #return render_template('signup.html', form = form, customer=)
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = SignUpForm()
+    form = frm.SignUpForm()
     errmsg=""
     #currentpassword = form.password.data
     if session['count'] ==1:
@@ -242,7 +243,7 @@ def signup():
 
 @app.route('/update', methods=['GET', 'POST'])
 def update():
-    form = UpdateForm()
+    form = frm.UpdateForm()
     currentemail = session['email']
     customer = Customers.query.filter_by(email=session['email']).first()
     if session['count'] == 1:
@@ -282,7 +283,7 @@ def update():
 
 @app.route('/booking', methods=['GET', 'POST'])
 def booking():
-    form = BookingForm()
+    form = frm.BookingForm()
     customer = Customers.query.filter_by(id = session['id']).first()
     msg=''
     if session['from'] == 'update':
@@ -419,7 +420,7 @@ def booking():
 
 @app.route('/actions', methods=['GET', 'POST'])
 def actions():
-    form = ActionsForm()
+    form = frm.ActionsForm()
     email = session['email']
     customer = Customers.query.filter_by(email = email).first()
     title = f"{session['greeting']}, {customer.first_name+' '+customer.last_name}, you can view your account details and book an appointment."
@@ -447,7 +448,7 @@ def actions():
 
 @app.route('/updatebooking', methods=['GET', 'POST'])
 def updatebooking():
-    form=UpdateBookingForm()
+    form=frm.UpdateBookingForm()
     col =session['appointment']
     appointment=Bookings.query.filter_by(date=col[0].isoformat(), weekday=col[1], timeslot = col[2],customer_id=col[3], country_id= col[4], vaccine_id=col[5]).first()
     if session['initial']:
@@ -523,4 +524,4 @@ def updatebooking():
 
 
 if __name__ == '__main__':
-     app.run(debug=True, host='0.0.0.0')
+     app.run(debug=True, host='0.0.0.0') 
