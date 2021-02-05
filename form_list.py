@@ -14,8 +14,9 @@ class SignUpForm(FlaskForm):
     firstname = StringField('First Name',validators=[validators.DataRequired()])
     lastname = StringField('Last Name',validators=[validators.DataRequired()])
     email = StringField('email',validators=[validators.Email(granular_message=True)])
-    password = PasswordField('Password', validators=[validators.Length(min=6,max=25), validators.EqualTo('reenterpassword',message = "Password doesn't match")])
-    reenterpassword = PasswordField('Re-Type Password', validators=[validators.Length(min=6,max=25)])
+    password = PasswordField('Password', validators=[validators.Length(min=6,max=25,message="Password  must be between 6 and 25 characters long"),
+     validators.EqualTo('reenterpassword',message = "Password doesn't match")])
+    reenterpassword = PasswordField('Re-Type Password')
     telephone = StringField('Telephone',validators=[validators.DataRequired()])
     gender = SelectField('Gender',choices=['M','F'])
     age = StringField('Age',validators=[validators.DataRequired()])
@@ -35,7 +36,7 @@ class UpdateForm(FlaskForm):
 class BookingForm(FlaskForm):
     country = SelectField('Travel Country',choices=[])
     vaccine = SelectField('Vaccine',choices=[])
-    submit = SubmitField('Create an Appointment')
+    create = SubmitField('Create an Appointment')
     go = SubmitField('Retrieve Vaccine')
     entrydate =DateField('Date')#,validators=[validators.DataRequired()])
     timeslot = SelectField('Time Slot',choices=['9:30am','10:30am','11:30am','13:30pm','14:30pm','15:30pm'])
