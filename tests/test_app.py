@@ -77,20 +77,18 @@ class TestBase(TestCase):
 class TestViews(TestBase):
 
     def test_login_get(self):
-
         response = self.client.get(url_for('login'))
         self.assertEqual(response.status_code, 200)
 
     def test_signup_get(self):
         session['count'] = 1
-        response = self.client.get(url_for('signup'))
-        self.assertEqual(response.status_code,302)
-
-    def test_actions_get(self):
-        session['email'] = 'john.doe@company.com'
-        response = self.app.get('/actions', query_string=dict())
-        #response = self.client.get(url_for('actions'))
+        response = self.client.get(url_for('signup',email='abc@cde.com'))
         self.assertEqual(response.status_code,200)
+
+    # def test_updatebooking_get(self):
+    #     response = self.app.get('/actions', query_string=dict())
+    #     #response = self.client.get(url_for('actions'))
+    #     self.assertEqual(response.status_code,200)
 
 # Test adding 
 class Testlogin(TestBase):
@@ -106,23 +104,26 @@ class Testlogin(TestBase):
 
 class TestSignup(TestBase):
     def test_update_post(self):
-        session['appointment'] =Bookings()
+        self.client.updatebooking(id=1 , oldapp="You don't have appointment")
         response = self.client.post(
             url_for('updatebooking'),
-            data = dict(),
+            data =dict(id=1 , oldapp="You don't have appointment"),
             follow_redirects=True
             )
-        self.assertEqual(response.status_code,302)
+        self.assertEqual(response.status_code,200)
+        print(response.status_code)
 # Test Deleting
 
 class TestActions(TestBase):
-    def test_delete_post(self):
+    def test_actions_post(self):
         
         response = self.client.post(
             url_for('actions'),
-            data = dict({'email' : 'john.doe@company.com'}),
+            data = dict(email='john.doe@company.com', source='welcome'),
             follow_redirects=True
             )
-        self.assertEqual(response.status_code,302)
+        print(response.status_code)
+        self.assertEqual(response.status_code,200)
+        
 
    
