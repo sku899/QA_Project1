@@ -4,7 +4,8 @@ from flask import url_for, session
 from flask_testing import TestCase
 
 # import the app's classes and objects
-from app import app, db, Customers, Countries, Vaccine, CVList, Bookings
+from flask_app_db import app, db
+from table_list import Customers, Countries, Vaccine, CVList, Bookings
 
 
 
