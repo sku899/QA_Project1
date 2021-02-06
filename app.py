@@ -48,7 +48,7 @@ def actions(email, source):
     form = frm.ActionsForm()
     customer = Customers.query.filter_by(email = email).first()
     title = f"{source}, {customer.first_name+' '+customer.last_name}, you can view your account details and book an appointment."
-    appointments = Bookings.query.filter_by(customer_id=customer.id).all()
+    appointments = Bookings.query.filter_by(customer_id=customer.id).order_by(Bookings.date).all()
     appointment_list = get_appointment_list(appointments)
     if form.booking.data:
         return redirect(url_for('booking',email=email, oldapp='no app'))
@@ -64,7 +64,8 @@ def signup(email):
     form = frm.SignUpForm()
     errmsg=""
     if '@' in  email:
-            form.email.data = email    
+            form.email.data = email  
+            email= ''  
     if  form.validate_on_submit(): ## everything is OK
         email =  form.email.data
         if is_exist(Customers.query.all(), form.email.data):
@@ -127,13 +128,13 @@ def booking(email,oldapp):
     form = frm.BookingForm()
     customer = Customers.query.filter_by(email=email).first()
     #display all appointments
-    appointments = Bookings.query.filter_by(customer_id=customer.id).all()
+    appointments = Bookings.query.filter_by(customer_id=customer.id).order_by(Bookings.date).all()
     app_list = get_appointment_list(appointments)
     form.appointments.choices = app_list[0:1] +app_list[2:]
     #populate country and vaccine drop down menus
     country_list = get_country_list()
     form.country.choices = country_list
-    selected_country = country_list[1]
+    selected_country = country_list[0]
     vaccine_list = get_vaccine_list(selected_country)
     form.vaccine.choices = vaccine_list
     if form.entrydate.data is None:
@@ -171,7 +172,7 @@ def booking(email,oldapp):
             booking_to_add = Bookings(date=date, weekday=weekday, timeslot = timeslot,customer_id=customer_id, country_id= country_id, vaccine_id=vaccine_id)
             db.session.add(booking_to_add)
             db.session.commit()
-            appointments = Bookings.query.filter_by(customer_id=customer.id).all()
+            appointments = Bookings.query.filter_by(customer_id=customer.id).order_by(Bookings.date).all()
             app_list = get_appointment_list(appointments)
             form.appointments.choices = app_list[0:1] +app_list[2:]
             return render_template('booking.html', form = form, message = app_list,msg = app_list[-1] + " has been added." )
@@ -208,7 +209,7 @@ def booking(email,oldapp):
                 db.session.delete(appointments_to_delete)
                 db.session.commit()
                 app_list.remove(delete_appointment)
-                appointments = Bookings.query.filter_by(customer_id=customer.id).all()
+                appointments = Bookings.query.filter_by(customer_id=customer.id).order_by(Bookings.date).all()
                 app_list = get_appointment_list(appointments)
                 form.appointments.choices = app_list[0:1] +app_list[2:]
                 return render_template('booking.html', form = form, message = app_list ,msg = delete_appointment + " has been deleted.")
