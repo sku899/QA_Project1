@@ -13,6 +13,6 @@ ocalhost = 'localhost:3306'
 database = 'flaskdb'
 
 #app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{username}:{password}@{localhost}/{database}"
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://me:qwerty123@localhost:3306/flaskdb"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:12345@localhost:3306/flaskdb"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 db = SQLAlchemy(app)
