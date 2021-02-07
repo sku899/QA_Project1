@@ -232,7 +232,7 @@ def booking(email,oldapp):
     #return render_template('update.html', form = form)
 
 
-@app.route('/updatebooking/<id>,<oldapp>', methods=[ 'POST', 'GET'])
+@app.route('/updatebooking/<id>/<oldapp>', methods=[ 'POST', 'GET'])
 def updatebooking(id,oldapp):
     form=frm.UpdateBookingForm()
     appointment_id = int(id)

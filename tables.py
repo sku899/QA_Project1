@@ -2,12 +2,13 @@
 This file will create the tables which show in app.py with or without records
 '''
 
-from app import db, Users, Customers, Countries, Vaccine  , CVList
+from flask_app_db import db
+from table_list import Users, Customers, Countries, Vaccine  , CVList
 
 db.drop_all()
 db.create_all()
 
-countries =['Argentia', 'Australia', 'Greece', 'India', 'South_Africa', 'Spain']
+countries =['Argentina', 'Australia', 'Greece', 'India', 'South_Africa', 'Spain']
 vaccine_list =['Hepatitis_A', 'Hepatitis_B', 'Japanese_Encephalitis', 'Malaria', 'Measles', 'Rabies', 'Typhoid', 'Yellow_Fever']
 
 vaccine_list_by_country=[
