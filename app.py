@@ -11,6 +11,7 @@ from table_list import Customers, Countries, Vaccine, CVList, Bookings
 from util_functions import *
 
 
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
 def login():
