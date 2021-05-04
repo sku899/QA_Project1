@@ -1,5 +1,5 @@
 
-# **Project 1 – Travel Vaccination Booking App** #
+# **SFIA_DevOps_Project 1 – Travel Vaccination Booking App** #
 
 # 1.Introduction of this project
 
@@ -162,7 +162,7 @@ In addition, when the country is selected, the vaccine drop-down menu should aut
 > 
 - Users cannot change their passwords
 
-# 9. Unitest Results #
+# 9. Unittest Results #
 Local coverage test result(16 tests, coverage = 65%).
 
 ![coverage test result](images/coverage.png)
@@ -210,18 +210,10 @@ The project in Git Hub will fetch to GCP instance to test if the app can be acce
     data = dict(email ="John.doe@company.com"),
     follow_redirects=True
     ) 
-
-- However, I receive the following error: 
-BuildError: Could not build url for endpoint 'signup'. Did you forget to specify values ['email']
-- I did assign email variable. I change the code to 
->     self.client.post(
-    url_for('signup', email ="John.doe@company.com"),
-    follow_redirects=True
-    )
 - This code works.
 
-
-
+# 13. Author #
+## Sabina Ku ##
 
 
 
