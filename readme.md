@@ -43,20 +43,20 @@
 # 6.App Interface #
 > Web interface includes the following 6 HTML files,
 
-## 1.Login page:  ##
+## 6-1.Login page:  ##
 
 > This page is for user to login. Users must provide their register email address and password.
 
 > **For a new user**: new users need to create user account before they can use the services.
-##2.Signup page:##
+## 6-2.Signup page: ##
 
 > for new users, they can register and create their accounts in this page.
 > 
-##3. Update page:##
+## 6-3. Update page: ##
 
 > Users can update their accounts details in this page.
 > 
-## 4. Actions page: ##
+## 6-4. Actions page: ##
 
 > Once the returned users login successfully, they will be directed to actions page which enables them to,
 
@@ -64,7 +64,7 @@
 - Make a vaccine appointment
 - Logout
 
-## 5. Booking page:  ##
+## 6-5. Booking page:  ##
 
 > The page is the key component of this project. In this page, users can
 
@@ -73,7 +73,7 @@
 - **U**pdate an existing appointment.Users will be redirected to another URL to view the selected appointment details, before they change and update the record. 
 - **D**elete an existing appointment.
 
-##6. Updatebooking##
+## 6-6. Updatebooking ##
 
 > This page allows user to
 
@@ -91,7 +91,7 @@ The folder structure of this project is as following,
 > ![folder structure](images/folder_structure.png)
 
 # 8.Route function #
-##1. login##
+## 8-1. login##
 > Login and Create New Account are the main function of this page.
 > #### What it does ####
 > 
@@ -104,7 +104,7 @@ The folder structure of this project is as following,
 - If a returned user input his/her email address and click Create New Account, the user will be redirected to signup page. But the user won’t be able to create a new account using an existing email.
 - No changing passwords function if user forget their passwords.
 
-## 2. Actions##
+## 8-2. Actions##
 > This page has three buttons. Each button will redirect users to different pages.
 > #### What it does ####
 > 
@@ -115,7 +115,7 @@ The folder structure of this project is as following,
 #### What it cannot do ####
 > 
 - NA
-##3. Booking##
+## 8-3. Booking##
 > This page allows users to management their appointments by view the appointments, create a new appoint, delete and update an existing appointment.
 > #### What it does ####
 > 
@@ -131,7 +131,7 @@ The folder structure of this project is as following,
 - Further, the users should be able to click the appointment they want to see or change by clicking the appointment directly. But at this moment, there are some undergone process to follow.
 In addition, when the country is selected, the vaccine drop-down menu should automatically populate. Now it requires to retrieve vaccine button to trigger the change.
 
-##  4. Updatebooking  ##
+## 8-4. Updatebooking  ##
 > This is similar to the process to Create an Appointment in Booking. The difference is the country, vaccine, date and time slot is set based on the previous booked record.
 > #### What it does ####
 > Users can change what they to change and click
@@ -141,7 +141,7 @@ In addition, when the country is selected, the vaccine drop-down menu should aut
 #### What it cannot do ####
 > 
 - It could be more user friendly by clicking the appointment list.
-## 5. Signup ##
+## 8-5. Signup ##
 > This page is for the new users to create their account before they can make a vaccine appointment. 
 > #### What it does ####
 > All the field are required (i.e cannot be null).  
@@ -152,7 +152,7 @@ In addition, when the country is selected, the vaccine drop-down menu should aut
 #### What it cannot do ####
 > 
 - It cannot check and advise if the password is strong or weak.- 
-## 6. Update##
+## 8-6. Update##
 > This page allows users to manage their accounts (not appointments).
 > #### What it does ####
 - Update your Account, change the all the account information except password.
