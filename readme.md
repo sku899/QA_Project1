@@ -45,7 +45,7 @@
 
 ## 6-1.Login page:  ##
 
-> This page is for user to login. Users must provide their register email address and password.
+> This page is for user to login. Users provide their registered email address and password to login.
 
 > **For a new user**: new users need to create user account before they can use the services.
 ## 6-2.Signup page: ##
@@ -58,7 +58,7 @@
 > 
 ## 6-4. Actions page: ##
 
-> Once the returned users login successfully, they will be directed to actions page which enables them to,
+> Once the registered users login successfully, they will be directed to actions page which enables them to,
 
 - Update their register account details.
 - Make a vaccine appointment
@@ -70,7 +70,7 @@
 
 - **C**reate a new appointment.
 - **R**etrieve their appointment records.
-- **U**pdate an existing appointment.Users will be redirected to another URL to view the selected appointment details, before they change and update the record. 
+- **U**pdate an existing appointment. Users will be redirected to another URL to view the selected appointment details, before they change and update the record. 
 - **D**elete an existing appointment.
 
 ## 6-6. Updatebooking ##
@@ -78,7 +78,7 @@
 > This page allows user to
 
 - View the selected appointment details, change the appointment and update the appointment.  and 
-- Not update the appointment, if they change their minds.
+- Cancel the action of updating the appointment, if they change their minds.
 
 > Each URL corresponds to one route with the same name of the html file, except login (for 'home' or '\').
 The workflow of above can be depicted by the next figure,
@@ -91,50 +91,50 @@ The folder structure of this project is as following,
 > ![folder structure](images/folder_structure.png)
 
 # 8.Route function #
-## 8-1. login##
-> Login and Create New Account are the main function of this page.
-> #### What it does ####
+## 8-1. login ##
+> Login and Create New Account are the main functions of this page.
+#### What it does ####
 > 
 - Validate if email address format is correct
-- Validate if user is a returned or new user
-- Redirect return users to actions page with successful login
-- Redirect users to signup page and auto fill email field if the email is in correct format
+- Validate if user is a registered or new user
+- Redirect registered users to actions page with successful login
+- Redirect new users to signup page and auto fill email field if the email is in correct format
 #### What it cannot do ####
 > 
 - If a returned user input his/her email address and click Create New Account, the user will be redirected to signup page. But the user won’t be able to create a new account using an existing email.
 - No changing passwords function if user forget their passwords.
 
-## 8-2. Actions##
+## 8-2. Actions ##
 > This page has three buttons. Each button will redirect users to different pages.
-> #### What it does ####
+#### What it does ####
 > 
 - Update Your Account
 - Manage Your Appointments
 - Log out
-- This page also displays all the appointment booked by a user if any.
+This page also displays all the appointment booked by a user if any.
 #### What it cannot do ####
 > 
 - NA
 ## 8-3. Booking##
-> This page allows users to management their appointments by view the appointments, create a new appoint, delete and update an existing appointment.
-> #### What it does ####
+> This page allows users to manage their appointments by viewing the appointments, creating a new appoint, deleting and updating an existing appointment.
+#### What it does ####
 > 
-- Create an Appointment: To create a new appointment, users select the country here they travel to, then click Retrieve Vaccine to populate the vaccine drop-down list with vaccine associated to the selected country. Then select the vaccine. Then select the date. The selected date must be a working day (Monday to Friday) and later than today. Then select time slot. If any of them is incorrectly selected. There will be an error message to remind users to reselect.
+- Create an Appointment: A new appointment can be created by the following steps: 1.Users select the country where they travel to. 2.Click Retrieve Vaccine button to populate the vaccine drop-down list with vaccine associated to the selected country. 3. Select the vaccine. 4. Select the date. The selected date must be a working day (Monday to Friday) and later than today. 5. Select the time slot. If any of selections is incorrect, there will be an error message to ask users to reselect.
 - Delete a selected Appointment
-- Update selected Appointment which redirect users to another web page.
+- Update a selected Appointment which will redirect users to another web page.
 - When delete or update an existing appointment, if no appointment is selected, an error message will show.
 - An appointment list will be updated to reflect users' actions.
 
 #### What it cannot do ####
 > 
-- Ideally, the appointments should be seen in different status, such as expired, executed and to be fulfilled. But at this moment all the appointments will be treated as same in respect of database point of view.
-- Further, the users should be able to click the appointment they want to see or change by clicking the appointment directly. But at this moment, there are some undergone process to follow.
-In addition, when the country is selected, the vaccine drop-down menu should automatically populate. Now it requires to retrieve vaccine button to trigger the change.
+- Ideally, the appointments should be seen in different status, such as expired, executed and to be fulfilled. But at this moment all the appointments will be treated as same.
+- Further, the users should be able to click the appointment they want to view or change by clicking the appointment directly. But at this moment, there are some undergone process to follow.
+- In addition, when the country is selected, the vaccine drop-down menu should automatically populate. Now it requires to retrieve vaccine button to trigger the change.
 
 ## 8-4. Updatebooking  ##
-> This is similar to the process to Create an Appointment in Booking. The difference is the country, vaccine, date and time slot is set based on the previous booked record.
-> #### What it does ####
-> Users can change what they to change and click
+> This is similar to the process to Create an Appointment in Booking. The difference is the country, vaccine, date and time slot is based on the selected booked record.
+#### What it does ####
+> Users can change what they would like to change by clicking the buttons
 - Update this Appointment: to update the appointment 
 - Cancel, if they change their minds.
 - Both buttons will redirect them back to booking page. A message in booking page will also show how the appointment has been updated.
@@ -143,18 +143,18 @@ In addition, when the country is selected, the vaccine drop-down menu should aut
 - It could be more user friendly by clicking the appointment list.
 ## 8-5. Signup ##
 > This page is for the new users to create their account before they can make a vaccine appointment. 
-> #### What it does ####
+#### What it does ####
 > All the field are required (i.e cannot be null).  
 - Validates email format,
 - Validate length of the password (6 to 25 characters)
 - Validate if password is same as the re-type password 
-- If the email is already exits in the database, the users will be redirect back to login page
+- If the email exits in the database, the users will be redirected back to login page
 #### What it cannot do ####
 > 
 - It cannot check and advise if the password is strong or weak.- 
-## 8-6. Update##
+## 8-6. Update ##
 > This page allows users to manage their accounts (not appointments).
-> #### What it does ####
+#### What it does ####
 - Update your Account, change the all the account information except password.
 - Delete your Account, users can only delete their accounts if they don’t have appointments. If they do, they cannot delete their accounts. and
 - Make an Appointment: redirect to booking page 
@@ -181,23 +181,23 @@ Local coverage test result(16 tests, coverage = 65%).
 - Host: Goggle Cloud Platform
 
 Each commit of the codes was pushed to git hub.
-The project in Git Hub will fetch to GCP instance to test if the app can be accessed from Internet.
+The project in Git Hub will be fetched to GCP instance to test if the app can be accessed from Internet.
 
 # 11.Developing process #
 - The project starts from a simplified table which has only three attributes. Use this table to learn how to use HTML form, FLASK and SQLAlchemy. 
 - Learn how to use form to receive the client’s request and data and use Flask to perform the corresponding actions to the request and display the execution result
 - After I have a better understanding of this framework, more complicated relational tables.
 - Develop codes to response to all the requests.
-- Test the code.
+- Test the codes.
 
 # 12. Challenges #
 > There are several challenges while developing this project,
 
-1. Environment: There are setup issues in many occasions. For example, UBUNTU revisions are different ion the local and instance. Different versions of UBUNTU have different issues with the other setup. It would be great if there is recommended setup at the very beginning of the training.
+1. Environment: There are setup issues in many occasions. For example, UBUNTU revisions between the local PC and GCP instance are different. Different versions of UBUNTU have different setups which are unique and not compatible. It would be great if there is a recommended setup at the very beginning of the training.
 1. Rational database with foreign key. It took me some time to figure out the naming of backreef in db.Relational function.
-1. There are variables passed between different routes. In the beginning I use session[‘variable’] to pass the variables. They work but also result in some problem, especially in performing pytest. Thanks for Luck’s suggestion to use dynamic URL.
-1. DateTime comparison. As mention above when the users make an appointment, they need to select a future working day. To make this work, the selected date is compared to another day (today). Due to the date format, the comparison is not that straightforward. Eventually, the dates were converted to an integer for the comparison purpose.
-1. Another datetime issue is caused when I run Pytest. Change the code to 
+1. There are variables passed between different routes. In the beginning I use session[‘variable’] to pass the variables. They work but also result in some problems, especially in performing pytest. Thanks for Luck’s suggestion to use dynamic URL.
+1. DateTime comparison. As mention above when the users make an appointment, they need to select a future working day. To make this work, the selected date is compared to the current day (today). Due to the date format, the comparison is not  straightforward. Eventually, the dates were converted to an integer for the comparison purpose.
+1. Another datetime issue rises when I run Pytest. Change the code to 
 1. bookings.date= datetime.now()
 1. Pytest. As I modified my codes at the last minute, still try to figure out how it works.
 
