@@ -197,9 +197,9 @@ The project in Git Hub will be fetched to GCP instance to test if the app can be
 1. Rational database with foreign key. It took me some time to figure out the naming of backreef in db.Relational function.
 1. There are variables passed between different routes. In the beginning I use session[‘variable’] to pass the variables. They work but also result in some problems, especially in performing pytest. Thanks for Luck’s suggestion to use dynamic URL.
 1. DateTime comparison. As mention above when the users make an appointment, they need to select a future working day. To make this work, the selected date is compared to the current day (today). Due to the date format, the comparison is not  straightforward. Eventually, the dates were converted to an integer for the comparison purpose.
-1. Another datetime issue rises when I run Pytest. Change the code to 
-1. bookings.date= datetime.now()
-1. Pytest. As I modified my codes at the last minute, still try to figure out how it works.
+1. Another datetime issue rises when I run Pytest. I have to change the code to in Pytest
+      bookings.date= datetime.now()
+
 
 #### for pytest ####
 - When I use session[‘var’] to pass the variable between routes, pytest returns error, something like KeyError: id. I suspect that is caused by session variable.
@@ -207,10 +207,11 @@ The project in Git Hub will be fetched to GCP instance to test if the app can be
 >
     self.client.post(
      	url_for('signup'),
-    data = dict(email ="John.doe@company.com"),
-    follow_redirects=True
+        data = dict(email ="John.doe@company.com"),
+        follow_redirects=True
     ) 
-- This code works.
+
+This code works.
 
 # 13. Author #
 ## Sabina Ku ##
