@@ -115,7 +115,7 @@ This page also displays all the appointment booked by a user if any.
 #### What it cannot do ####
 > 
 - NA
-## 8-3. Booking##
+## 8-3. Booking ##
 > This page allows users to manage their appointments by viewing the appointments, creating a new appoint, deleting and updating an existing appointment.
 #### What it does ####
 > 
