@@ -3,9 +3,9 @@
 
 # 1.Introduction of this project
 
->  This project is to develop a vacation vaccine app which customers can book appointments to gain the vaccines required before they travel. This app attempts to let customers do the following,
+>  This project is to develop a vacation vaccine App which users can book appointments to get the vaccines required before they travel. This App let users do the following:
 
-1. To **view** the vaccine required the country where the customers travel to,
+1. To **view** the vaccine required by the country where the users travel to,
 2. To **C**reate(book) a new appointment
 3. To **U**pdate(change) an existing appointment
 4. To **R**etrieve and view the appointment history,
@@ -19,7 +19,7 @@
  ![kanban](images/kanban.png)
 
 # 3.Goal of this project #
-> To create a web app based on MySQL server, Python and Flask that can accept the users’ input/request to create, retrieve, update and delete records in database.
+> To create a web App with MySQL server, Python and Flask that can accept the users’ input/request to create, retrieve, update and delete records in the database.
 
 # 4.Structure of the project #
 > The structure of this project is shown in the next figure.
@@ -32,7 +32,7 @@
 
 ![ER Diagram of database](images/er_diagram.png)
 
-> The tables used in this projects are defined in table_list.py as following:
+> The tables used in this projects are defined in table_list.py as the following:
 
 ![table customers definition ](images/tbl_customers.png)
 ![table bookings definition](images/tbl_bookings.png)
@@ -43,13 +43,13 @@
 # 6.App Interface #
 > Web interface includes the following 6 HTML files,
 
-## 6-1.Login page:  ##
+## 6-1. Login page:  ##
 
 > This page is for user to login. Users provide their registered email address and password to login.
 ![login_newaccount_page](images/login_newaccount_page.jpg)
 
 > **For a new user**: new users need to create user account before they can use the services.
-## 6-2.Signup page: ##
+## 6-2. Signup page: ##
 
 > for new users, they can register and create their accounts in this page.
 > 
@@ -88,7 +88,7 @@ The workflow of above can be depicted by the next figure,
 > ![route workflow](images/workflow.png)
 
 # 7.Project folder_structure #
-The folder structure of this project is as following,
+The folder structure of this project is as the following,
 > ![folder structure](images/folder_structure.png)
 
 # 8.Route function #
@@ -185,33 +185,30 @@ Each commit of the codes was pushed to git hub.
 The project in Git Hub will be fetched to GCP instance to test if the app can be accessed from Internet.
 
 # 11.Developing process #
-- The project starts from a simplified table which has only three attributes. Use this table to learn how to use HTML form, FLASK and SQLAlchemy. 
-- Learn how to use form to receive the client’s request and data and use Flask to perform the corresponding actions to the request and display the execution result
-- After I have a better understanding of this framework, more complicated relational tables.
+- The project starts from a simplified table which has only three attributes, to use this table to practice HTML form, FLASK and SQLAlchemy. 
+- How to use form to receive the client’s request and data and use Flask to perform the corresponding actions to the request and display the execution result.
+- I then develop more complicated relational tables after I have a better understanding of the framework.
 - Develop codes to response to all the requests.
 - Test the codes.
 
 # 12. Challenges #
-> There are several challenges while developing this project,
+> There are several challenges when I develop this project,
 
-1. Environment: There are setup issues in many occasions. For example, UBUNTU revisions between the local PC and GCP instance are different. Different versions of UBUNTU have different setups which are unique and not compatible. It would be great if there is a recommended setup at the very beginning of the training.
-1. Rational database with foreign key. It took me some time to figure out the naming of backreef in db.Relational function.
-1. There are variables passed between different routes. In the beginning I use session[‘variable’] to pass the variables. They work but also result in some problems, especially in performing pytest. Thanks for Luck’s suggestion to use dynamic URL.
-1. DateTime comparison. As mention above when the users make an appointment, they need to select a future working day. To make this work, the selected date is compared to the current day (today). Due to the date format, the comparison is not  straightforward. Eventually, the dates were converted to an integer for the comparison purpose.
-1. Another datetime issue rises when I run Pytest. I have to change the code to in Pytest
-      bookings.date= datetime.now()
-
+1. Environment: There are settings issues in many occasions. For example, UBUNTU versions between the local PC and GCP instance are different. Different versions of UBUNTU have different setings which are not compatible. 
+2. Relational database with foreign key: It took me some time to figure out the naming of backreef in db.Relational function.
+3. There are issues to pass variables between different routes. In the beginning I use session[‘variable’] to pass the variables. They work but also result in some problems, particularly in performing pytest.
+4. DateTime comparison. As mention above when the users make an appointment, they need to select a future working day. To make this work, the selected date is compared to the current day (today). The comparison is not straightforward due to the date format, therefore, the dates are converted to the integer for the comparison purpose.
+5. Another datetime issue rises when I run Pytest. I have to change the code to bookings.date= datetime.now() in Pytest.
 
 #### for pytest ####
-- When I use session[‘var’] to pass the variable between routes, pytest returns error, something like KeyError: id. I suspect that is caused by session variable.
-- Luke suggested me to use Dynamic URL. Then I pass the variable by using ‘url/<email>/<id>’. I use the following code to perform test, 
+- When I use session[‘var’] to pass the variable between routes, pytest returns error, something like KeyError: id. I think it is caused by session variable.
+- Luke suggested me to use Dynamic URL. Hence I pass the variable by using ‘url/<email>/<id>’. I use the following code to perform test, 
 >
     self.client.post(
      	url_for('signup'),
         data = dict(email ="John.doe@company.com"),
         follow_redirects=True
     ) 
-
 This code works.
 
 # 13. Author #
