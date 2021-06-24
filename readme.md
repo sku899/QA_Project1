@@ -46,6 +46,7 @@
 ## 6-1.Login page:  ##
 
 > This page is for user to login. Users provide their registered email address and password to login.
+![login_newaccount_page](images/login_newaccount_page.jpg)
 
 > **For a new user**: new users need to create user account before they can use the services.
 ## 6-2.Signup page: ##
