@@ -68,6 +68,7 @@
 - Update their register account details.
 - Make a vaccine appointment
 - Logout
+![actions](images/actions.PNG)
 
 ## 6-5. Booking page:  ##
 
