@@ -76,13 +76,29 @@
 
 - **C**reate a new appointment.
 - **R**etrieve their appointment records.
+![create appointment](images/create_appointment.png)
 - **U**pdate an existing appointment. Users will be redirected to another URL to view the selected appointment details, before they change and update the record. 
+
+
+![update appointment](images/update_appointment.png)
+
+- Once the appointment is updated
+
+![update appointment confirmed](images/update_appointment_confirmed.png)
 - **D**elete an existing appointment.
+
+![delete appointment](images/delete_appointment.png)
+
+- Once the appointment is deleted
+
+![delete appointment confirmed](images/delete_appointment_confirmed.png)
 
 ## 6-6. Updatebooking ##
 
 > This page allows user to
 
+
+**Details see 6-5** Update an existing appointment.
 - View the selected appointment details, change the appointment and update the appointment.  and 
 - Cancel the action of updating the appointment, if they change their minds.
 
