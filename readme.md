@@ -53,9 +53,9 @@
 
 > for new users, they can register and create their accounts in this page.
 > When enter an email address which doesn’t exist in current database, the user will be regarded as a new user and is required to register and create a new account. 
-![create_new_account_1](images/create_new_account_1.PNG)
+![create_new_account_1](images/create_new_account_1.png)
 > After clicking ‘Create New Account’ button, an account register form will appear and let the user to input the details. By default, all the fields are mandatory, the Password field must match the field of Re-Type Password field. 
-![create_new_account_2](images/create_new_account_2.PNG)
+![create_new_account_2](images/create_new_account_2.png)
 ## 6-3. Update page: ##
 
 > Users can update their accounts details in this page.
