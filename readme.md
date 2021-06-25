@@ -60,7 +60,7 @@
 ## 6-3. Update page: ##
 
 > Users can update their accounts details in this page.
-> 
+![update account](images/update_account.png)
 ## 6-4. Actions page: ##
 
 > Once the registered users login successfully, they will be directed to actions page which enables them to,
